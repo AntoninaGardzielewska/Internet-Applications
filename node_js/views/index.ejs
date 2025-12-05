@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      font-size: 2em;
+    }
+
+    .cart-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .cart-count {
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .checkout-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+
+    .checkout-btn:hover {
+      background: #764ba2;
+    }
+
+    .message {
+      background: #4caf50;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      animation: slideIn 0.3s ease-in;
+    }
+
+    .message.error {
+      background: #f44336;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 15px;
+      color: white;
+    }
+
+    .product-name {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .product-body {
+      padding: 20px;
+    }
+
+    .product-price {
+      font-size: 1.8em;
+      color: #667eea;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .product-description {
+      color: #666;
+      margin-bottom: 10px;
+      font-size: 0.95em;
+    }
+
+    .product-quantity {
+      color: #999;
+      margin-bottom: 15px;
+      font-size: 0.9em;
+    }
+
+    .add-to-cart-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .add-to-cart-btn {
+      flex: 1;
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .add-to-cart-btn:hover {
+      background: #45a049;
+    }
+
+    .add-to-cart-btn:active {
+      transform: scale(0.98);
+    }
+
+    .no-products {
+      text-align: center;
+      color: white;
+      font-size: 1.2em;
+      padding: 40px;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      margin-top: 40px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛍️ Online Store</h1>
+      <div class="cart-info">
+        <div class="cart-count"><%= cart.length %></div>
+        <form action="/checkout" method="GET" style="margin: 0;">
+          <button type="submit" class="checkout-btn">🛒 Checkout</button>
+        </form>
+      </div>
+    </header>
+
+    <% if (message) { %>
+      <div class="message <%= message.includes('error') || message.includes('Error') ? 'error' : '' %>">
+        <%= message %>
+      </div>
+    <% } %>
+
+    <% if (products && products.length > 0) { %>
+      <div class="products-grid">
+        <% products.forEach(product => { %>
+          <div class="product-card">
+            <div class="product-header">
+              <div class="product-name"><%= product.name %></div>
+              <div class="product-price">$<%= parseFloat(product.price).toFixed(2) %></div>
+            </div>
+            <div class="product-body">
+              <div class="product-description"><%= product.description || 'No description available' %></div>
+              <div class="product-quantity">📦 Available: <%= product.quantity %></div>
+              <form method="POST" action="/add-to-cart" class="add-to-cart-form">
+                <input type="hidden" name="productId" value="<%= product.id %>">
+                <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+              </form>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="no-products">
+        <p>No products available at the moment. Please check back later!</p>
+      </div>
+    <% } %>
+
+    <footer>
+      <p>&copy; 2025 Online Store. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>
