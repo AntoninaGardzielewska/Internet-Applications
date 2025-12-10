@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Online Store</title>
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛒 Shopping Cart</h1>
+    </header>
+
+    <% if (message) { %>
+      <div class="message <%= message.includes('error') || message.includes('Error') || message.includes('no longer') ? 'error' : '' %>">
+        <%= message %>
+      </div>
+    <% } %>
+
+    <div class="checkout-container">
+      <div class="cart-section">
+        <h2>Your Items</h2>
+
+        <% if (cart && cart.length > 0) { %>
+          <div class="cart-items">
+            <% cart.forEach(item => { %>
+              <div class="cart-item">
+                <div class="item-info">
+                  <div class="item-name"><%= item.name %></div>
+                  <div class="item-quantity">Quantity: <strong><%= item.quantity %></strong></div>
+                </div>
+                <form method="POST" action="/remove-from-cart" style="margin: 0;">
+                  <input type="hidden" name="productId" value="<%= item.id %>">
+                  <button type="submit" class="remove-btn">Remove</button>
+                </form>
+              </div>
+            <% }); %>
+          </div>
+
+          <div class="cart-summary">
+            <div class="summary-row">
+              <span>Total items in cart:</span>
+              <span>
+                <% 
+                  let total = 0;
+                  cart.forEach(item => {
+                    total += item.quantity;
+                  });
+                %>
+                <%= total %>
+              </span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <form method="GET" action="/" style="flex: 1;">
+              <button type="submit" class="back-btn">← Continue Shopping</button>
+            </form>
+            <form method="POST" action="/cancel-purchase" style="flex: 1;">
+              <button type="submit" class="cancel-btn">✕ Cancel Purchase</button>
+            </form>
+            <form method="POST" action="/finalize-purchase" style="flex: 1;">
+              <button type="submit" class="finalize-btn">✓ Finalize Purchase</button>
+            </form>
+          </div>
+        <% } else { %>
+          <div class="cart-empty">
+            <p>Your shopping cart is empty</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Start adding some products!</p>
+          </div>
+
+          <div class="actions">
+            <form method="GET" action="/" style="width: 100%;">
+              <button type="submit" class="back-btn" style="width: 100%;">← Continue Shopping</button>
+            </form>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Online Store. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>
