@@ -105,12 +105,12 @@ app.post('/add-to-cart', (req, res) => {
 
 // View shopping cart
 app.get('/checkout', (req, res) => {
-  console.log(req.session.message);
+  // console.log(req.session.message);
   res.render('checkout', { 
     cart: req.session.cart,
     message: req.session.message
   });
-  console.log("xxx")
+  // console.log("xxx")
   req.session.message = null;
 });
 
@@ -155,8 +155,8 @@ app.post('/finalize-purchase', (req, res) => {
 
   // Attempt transactional purchase
   db.purchaseProducts(items, (err, result) => {
-    console.log("RESULT:", result);
-    console.log("MESSAGE:", req.session.message);
+    // console.log("RESULT:", result);
+    // console.log("MESSAGE:", req.session.message);
 
     if (err) {
       console.error('Purchase error:', err);

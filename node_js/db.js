@@ -173,20 +173,11 @@ const purchaseProducts = (items, callback) => {
   });
 };
 
-// Add a sample product (for testing)
-const addProduct = (name, price, description, quantity, callback) => {
-  const query = 'INSERT INTO products (name, price, description, quantity) VALUES (?, ?, ?, ?)';
-  pool.query(query, [name, price, description, quantity], (err, results) => {
-    callback(err, results);
-  });
-};
-
-// Initialize database on module load
+// Initialize database
 initDatabase();
 
 module.exports = {
   getAllProducts,
   getProduct,
-  // addProduct,
   purchaseProducts
 };
